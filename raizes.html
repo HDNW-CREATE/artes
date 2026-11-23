@@ -389,6 +389,23 @@ dialog::backdrop{background:rgba(10,9,8,.78)}
 .list-dash li::before{content:"";position:absolute;left:0;top:.75em;width:12px;height:1px;background:var(--ouro)}
 .stack{display:grid;gap:22px}
 .mt{margin-top:40px}
+
+/* fotografias (Pexels) */
+.ph{width:100%;height:100%;object-fit:cover;display:block}
+.hero-art .ph{filter:saturate(.92) brightness(.78)}
+.hero-art::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(23,21,18,.6) 0%,rgba(23,21,18,.25) 55%,transparent 80%)}
+.mani .art .ph{filter:saturate(.95) brightness(.85)}
+.ph-box{position:relative;overflow:hidden;background:var(--preto)}
+.ph-box .ph{transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.ph-box:hover .ph{transform:scale(1.04)}
+.ph-cr{position:absolute;right:0;bottom:0;z-index:1;padding:5px 10px;font-size:.68rem;letter-spacing:.04em;color:#eadfcb;background:rgba(23,21,18,.72)}
+.ph-cr a{color:inherit}
+.gal button .ph{height:auto;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.gal button:hover .ph{transform:scale(1.04)}
+.lb-stage .ph{width:auto;max-width:100%;height:auto;max-height:68vh;object-fit:contain}
+.photo-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.photo-strip .ph-box{aspect-ratio:3/4}
+@media (max-width:820px){.photo-strip{grid-template-columns:repeat(2,1fr)}}
 </style>
 
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -520,6 +537,27 @@ function plateType(name,years,line,seed){
 function plateInstr(fn,bg){return `<svg viewBox="0 0 600 600" aria-hidden="true"><rect width="600" height="600" fill="${bg}"/><circle cx="300" cy="300" r="250" fill="none" stroke="${C.ouro}" stroke-opacity=".25" stroke-dasharray="2 10"/><g transform="translate(100 100) scale(2)">${fn().replace(/^<svg[^>]*>|<\/svg>$/g,'')}</g></svg>`}
 function plateDiagram(){return rodaSVG(true)}
 
+
+/* ============ FOTOS (Pexels) ============ */
+const PHOTOS={
+ roda:{id:28975509,alt:'Dois capoeiristas jogando em uma praça histórica de Salvador, sob céu azul',by:'Priscila Almeida',pos:'50% 60%'},
+ aú:{id:28975508,alt:'Roda de capoeira na rua: tocador de berimbau e capoeirista de cabeça para baixo',by:'Priscila Almeida',pos:'60% 50%'},
+ tambores:{id:29355134,alt:'Jovens percussionistas com roupas estampadas tocando tambores numa rua de Salvador',by:'Almir Reis',pos:'50% 45%'},
+ baianas:{id:18043618,alt:'Duas mulheres com trajes de baiana diante do Elevador Lacerda, em Salvador',by:'Leonardo Dourado',pos:'50% 60%'},
+ baianas2:{id:31792591,alt:'Duas mulheres com trajes tradicionais baianos sentadas sob uma árvore',by:'Pexels',pos:'50% 55%'},
+ baiana3:{id:18043609,alt:'Mulheres com trajes de baiana em um mirante diante da Baía de Todos-os-Santos',by:'Leonardo Dourado',pos:'50% 40%'},
+ pelourinho:{id:14059766,alt:'Casarões coloridos e igrejas do Centro Histórico de Salvador',by:'Pexels',pos:'50% 50%'},
+ saofrancisco:{id:4172523,alt:'Largo do Cruzeiro de São Francisco, no Pelourinho, Salvador',by:'Pexels',pos:'50% 50%'},
+ rua:{id:30495350,alt:'Rua colorida do Pelourinho, com casarões coloniais',by:'Bráulio Jardim',pos:'50% 50%'},
+ maos:{id:6193720,alt:'Mãos tocando um tambor de pele, em close',by:'Askar Abayev',pos:'50% 50%'},
+ roda2:{id:9630164,alt:'Mãos de várias pessoas tocando tambores em roda',by:'Pexels',pos:'50% 50%'}
+};
+const pxUrl=(id,w)=>`https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
+function photo(k,{eager=false,sizes='100vw'}={}){const p=PHOTOS[k];
+  return `<img class="ph" src="${pxUrl(p.id,1280)}" srcset="${[640,960,1280,1920].map(w=>pxUrl(p.id,w)+' '+w+'w').join(', ')}" sizes="${sizes}" alt="${p.alt}" loading="${eager?'eager':'lazy'}" decoding="async"${eager?' fetchpriority="high"':''} style="object-position:${p.pos}">`}
+function credit(k){const p=PHOTOS[k];return `<span class="ph-cr">Foto: ${p.by==='Pexels'?'':p.by+' / '}<a href="https://www.pexels.com/photo/${p.id}/" target="_blank" rel="noopener">Pexels</a></span>`}
+function photoBox(k,ratio,sizes='(max-width:900px) 100vw, 50vw'){return `<div class="rv ph-box" style="aspect-ratio:${ratio};max-width:100%">${photo(k,{sizes})}${credit(k)}</div>`}
+
 /* ============ DATA ============ */
 const INSTR={
  berimbau:{nome:'Berimbau',em:['Capoeira'],fis:'Arco de madeira (verga) tensionado por um fio de aço, com uma cabaça presa à parte inferior que funciona como caixa de ressonância. É tocado com uma baqueta, um dobrão (moeda ou pedra) e o caxixi, pequeno chocalho de palha trançada.',mat:'Tradicionalmente, verga de madeiras como a biriba; arame de aço (muitas vezes retirado de pneus); cabaça; caxixi de palha e sementes.',som:'O fio é percutido pela baqueta. O dobrão encostado ou afastado do arame altera a altura do som, e a cabaça aproximada ou afastada da barriga do tocador modula a ressonância.',fun:'Comanda a roda. Os toques do berimbau indicam o andamento e o tipo de jogo. Em muitas rodas tocam três berimbaus com timbres diferentes: gunga (grave), médio e viola (agudo).',imp:'É o principal símbolo da capoeira. Arcos musicais com cabaça existem em várias regiões da África Centro-Ocidental e Austral, e pesquisadores relacionam o berimbau a esses instrumentos.',cur:'Em fontes do século XIX o arco musical aparece também nas ruas, nas mãos de vendedores ambulantes. Sua associação forte e quase exclusiva com a capoeira se consolida no século XX.'},
@@ -625,6 +663,14 @@ const QUIZ=[
 ];
 
 const GALLERY=[
+ {cat:'Fotografias',t:'Capoeira na praça',c:'Jogo de capoeira ao ar livre em uma praça histórica de Salvador.',ph:'roda'},
+ {cat:'Fotografias',t:'A roda na rua',c:'O berimbau comanda enquanto o capoeirista se lança de cabeça para baixo.',ph:'aú'},
+ {cat:'Fotografias',t:'Percussão nas ruas de Salvador',c:'Jovens percussionistas em cortejo pelas ladeiras do Centro Histórico.',ph:'tambores'},
+ {cat:'Fotografias',t:'Baianas',c:'Trajes tradicionais de baiana, com turbantes, saias rodadas e fios de contas.',ph:'baianas'},
+ {cat:'Fotografias',t:'Pelourinho',c:'Casarões coloniais do Centro Histórico de Salvador, Patrimônio Mundial.',ph:'pelourinho'},
+ {cat:'Fotografias',t:'O tambor nas mãos',c:'A pele do tambor responde à mão: base de muitas tradições musicais afro-diaspóricas.',ph:'maos'},
+ {cat:'Fotografias',t:'Largo de São Francisco',c:'Um dos cenários mais conhecidos do Pelourinho.',ph:'saofrancisco'},
+ {cat:'Fotografias',t:'Tambores em roda',c:'Tocar junto: o ritmo como experiência coletiva.',ph:'roda2'},
  {cat:'Roda de capoeira',t:'A roda ao entardecer',c:'Composição ilustrada de uma roda vista do alto, com a bateria de berimbaus no primeiro plano.',art:()=>A.scene({seed:11,ring:16,w:900,h:1100})},
  {cat:'Capoeira Angola',t:'Jogo baixo',c:'Diagrama da meia-lua de compasso, movimento rente ao chão comum ao jogo de Angola.',art:()=>movGlyph('meialua').replace('viewBox="0 0 320 240"','viewBox="0 0 320 240" style="background:#201d19"')},
  {cat:'Instrumentos',t:'Berimbau',c:'Verga, arame, cabaça, baqueta, dobrão e caxixi.',art:()=>plateInstr(A.berimbau,C.verde)},
@@ -642,7 +688,7 @@ const GALLERY=[
  {cat:'Maculelê',t:'Grimas',c:'Os bastões que marcam o ritmo do Maculelê.',art:()=>plateInstr(A.bastoes,C.preto)},
  {cat:'Afoxés',t:'Afoxé, o instrumento',c:'Mesmo nome, outra coisa: a cabaça com contas.',art:()=>plateInstr(A.afoxe,'#2b2119')}
 ];
-const GAL_CATS=['Todas','Capoeira Angola','Capoeira Regional','Instrumentos','Roda de capoeira','Ijexá','Afoxés','Maculelê','Apresentações culturais','Mestres e grupos tradicionais'];
+const GAL_CATS=['Todas','Fotografias','Capoeira Angola','Capoeira Regional','Instrumentos','Roda de capoeira','Ijexá','Afoxés','Maculelê','Apresentações culturais','Mestres e grupos tradicionais'];
 
 /* ============ HELPERS ============ */
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -679,7 +725,7 @@ function rodaSVG(plate){
 const P={};
 
 P.inicio=()=>`
-${hero({short:false,eyebrow:'Raízes — Museu Digital da Cultura Afro-Brasileira',title:'RAÍZES QUE PERMANECEM',sub:'Capoeira, Ijexá e Maculelê: manifestações que carregam a memória, a identidade e a riqueza da cultura afro-brasileira.',art:A.scene({seed:3}),
+${hero({short:false,eyebrow:'Raízes — Museu Digital da Cultura Afro-Brasileira',title:'RAÍZES QUE PERMANECEM',sub:'Capoeira, Ijexá e Maculelê: manifestações que carregam a memória, a identidade e a riqueza da cultura afro-brasileira.',art:photo('roda',{eager:true}),
  actions:`<a class="btn btn-gold" href="#inicio" data-anchor="manifestacoes">Explorar as manifestações ${arrow}</a><a class="btn btn-ghost" href="#historia">Conhecer nossa história</a>`,
  meta:'<span><b>3</b>manifestações</span><span><b>13</b>salas</span><span><b>7</b>instrumentos</span><span><b>17</b>perguntas no quiz</span>'})}
 <div class="band p1 on-dark-band" aria-hidden="true"></div>
@@ -695,15 +741,15 @@ ${hero({short:false,eyebrow:'Raízes — Museu Digital da Cultura Afro-Brasileir
 <section class="sec dark" id="manifestacoes"><div class="wrap">
   ${head('As três salas principais','Três manifestações, três histórias próprias','Escolha uma das salas. Cada página traz história, instrumentos, movimentos, música e o debate sobre preservação.')}
   <div class="mani-grid">
-   ${[['capoeira','01','Jogo · Luta · Dança · Música','Capoeira','Uma expressão afro-brasileira que reúne jogo, luta, dança, música, estratégia e resistência cultural.',A.scene({seed:5,ring:14,w:800,h:1100}),'Explorar Capoeira'],
-      ['ijexa','02','Ritmo · Cortejo · Ancestralidade','Ijexá','Uma expressão musical e rítmica de raízes afro-brasileiras, profundamente relacionada às tradições culturais iorubás.',A.scene({seed:6,motif:'cortejo',ring:0,bg1:'#1d2a24',w:800,h:1100}),'Explorar Ijexá'],
-      ['maculele','03','Dança coletiva · Bastões','Maculelê','Uma manifestação cultural marcada pela dança coletiva, pela musicalidade e pelos movimentos ritmados com bastões.',A.scene({seed:7,motif:'bastoes',ring:10,bg1:C.terra,w:800,h:1100}),'Explorar Maculelê']
+   ${[['capoeira','01','Jogo · Luta · Dança · Música','Capoeira','Uma expressão afro-brasileira que reúne jogo, luta, dança, música, estratégia e resistência cultural.',photo('roda',{sizes:'(max-width:900px) 100vw, 33vw'}),'Explorar Capoeira'],
+      ['ijexa','02','Ritmo · Cortejo · Ancestralidade','Ijexá','Uma expressão musical e rítmica de raízes afro-brasileiras, profundamente relacionada às tradições culturais iorubás.',photo('tambores',{sizes:'(max-width:900px) 100vw, 33vw'}),'Explorar Ijexá'],
+      ['maculele','03','Dança coletiva · Bastões','Maculelê','Uma manifestação cultural marcada pela dança coletiva, pela musicalidade e pelos movimentos ritmados com bastões.',photo('roda2',{sizes:'(max-width:900px) 100vw, 33vw'}),'Explorar Maculelê']
      ].map(([r,n,tag,t,d,art,b])=>`<a class="mani rv" href="#${r}" aria-label="${b}"><div class="art">${art}</div><span class="num">${n}</span><div class="body"><span class="tag">${tag}</span><h3>${t}</h3><p>${d}</p><span class="btn btn-gold" style="justify-self:start">${b} ${arrow}</span></div></a>`).join('')}
   </div>
 </div></section>
 
 <section class="sec"><div class="wrap split">
-  <div class="rv" style="aspect-ratio:4/5;max-width:100%;overflow:hidden;background:var(--preto)">${A.scene({seed:13,ring:20,w:800,h:1000,bg1:'#2e2218'})}</div>
+  ${photoBox('baianas2','4/5')}
   <div class="stack">
     <p class="eyebrow rv">Destaque</p>
     <h2 class="rv">CULTURA NÃO É APENAS PASSADO. É IDENTIDADE VIVA.</h2>
@@ -720,7 +766,7 @@ ${hero({short:false,eyebrow:'Raízes — Museu Digital da Cultura Afro-Brasileir
 </div></section>`;
 
 P.capoeira=()=>`
-${hero({eyebrow:'Sala 01 · Capoeira',title:'CAPOEIRA — O CORPO QUE CONTA UMA HISTÓRIA',sub:'Uma manifestação afro-brasileira em que movimento, música, estratégia e ancestralidade se encontram.',art:A.scene({seed:5})})}
+${hero({eyebrow:'Sala 01 · Capoeira',title:'CAPOEIRA — O CORPO QUE CONTA UMA HISTÓRIA',sub:'Uma manifestação afro-brasileira em que movimento, música, estratégia e ancestralidade se encontram.',art:photo('aú',{eager:true})})}
 ${subnav('capoeira',[['historia-c','História e origem'],['angola','Capoeira Angola'],['regional','Capoeira Regional'],['comparar','Angola × Regional'],['instrumentos-c','Instrumentos'],['movimentos','Movimentos'],['roda','A roda'],['patrimonio','Patrimônio']])}
 <section class="sec" id="historia-c"><div class="wrap split top-align">
   <div class="stack">
@@ -823,7 +869,7 @@ ${subnav('capoeira',[['historia-c','História e origem'],['angola','Capoeira Ang
 ${nextRoom('capoeira')}`;
 
 P.ijexa=()=>`
-${hero({eyebrow:'Sala 02 · Ijexá',title:'IJEXÁ — O RITMO DA ANCESTRALIDADE',sub:'Uma expressão musical que conecta tradição, identidade, espiritualidade e cultura afro-brasileira.',art:A.scene({seed:6,motif:'cortejo',ring:0,bg1:'#1d2a24'})})}
+${hero({eyebrow:'Sala 02 · Ijexá',title:'IJEXÁ — O RITMO DA ANCESTRALIDADE',sub:'Uma expressão musical que conecta tradição, identidade, espiritualidade e cultura afro-brasileira.',art:photo('tambores',{eager:true})})}
 ${subnav('ijexa',[['origem-i','Origem e história'],['oque','O que é o Ijexá'],['instrumentos-i','Instrumentos'],['afoxe','Afoxé e Ijexá'],['musica','Na música brasileira'],['importancia-i','Importância']])}
 <section class="sec" id="origem-i"><div class="wrap split top-align">
   <div>${head('5.2 · Origem e história','De Ilexá às ruas de Salvador')}
@@ -850,7 +896,7 @@ ${subnav('ijexa',[['origem-i','Origem e história'],['oque','O que é o Ijexá']
 
 <section class="sec alt" id="afoxe"><div class="wrap split top-align">
   <div class="stack">${head('5.5 · Afoxé e Ijexá','O cortejo e o seu ritmo')}
-   <div class="rv" style="aspect-ratio:4/3;max-width:100%;overflow:hidden">${A.scene({seed:22,motif:'cortejo',ring:0,bg1:'#1d2a24',w:1000,h:750})}</div></div>
+   ${photoBox('baiana3','4/3')}</div>
   <div class="prose rv">
    <p><b>O que são os afoxés.</b> Grupos culturais afro-brasileiros que desfilam em cortejo, sobretudo no carnaval, com ligação ao universo do candomblé. Por isso são muitas vezes chamados de "candomblé de rua". O termo é atribuído a uma palavra de origem iorubá.</p>
    <p><b>História.</b> Pesquisadores apontam os clubes carnavalescos de temática africana do fim do século XIX em Salvador, como a Embaixada Africana e os Pândegos d'África, como precursores. Esses grupos sofreram proibições no início do século XX. Em 1949, estivadores do porto fundaram o <span class="gold">Filhos de Gandhy</span>, hoje um dos maiores símbolos do carnaval baiano. Nas décadas de 1970 e 1980 surgiram e ressurgiram muitos outros afoxés, em diálogo com o movimento negro.</p>
@@ -879,7 +925,7 @@ ${subnav('ijexa',[['origem-i','Origem e história'],['oque','O que é o Ijexá']
 ${nextRoom('ijexa')}`;
 
 P.maculele=()=>`
-${hero({eyebrow:'Sala 03 · Maculelê',title:'MACULELÊ — O RITMO QUE VIVE NA DANÇA',sub:'Uma manifestação cultural afro-brasileira que combina movimento, musicalidade, tradição e expressão coletiva.',art:A.scene({seed:7,motif:'bastoes',ring:12,bg1:C.terra})})}
+${hero({eyebrow:'Sala 03 · Maculelê',title:'MACULELÊ — O RITMO QUE VIVE NA DANÇA',sub:'Uma manifestação cultural afro-brasileira que combina movimento, musicalidade, tradição e expressão coletiva.',art:photo('roda2',{eager:true})})}
 ${subnav('maculele',[['historia-m','História e origem'],['caracteristicas','Características'],['bastoes','Bastões'],['instrumentos-m','Instrumentos'],['cantos','Cantos'],['vestimentas','Vestimentas'],['maculele-capoeira','Maculelê e capoeira']])}
 <section class="sec" id="historia-m"><div class="wrap split top-align">
   <div class="stack">${head('6.2 · História e origem','Santo Amaro e as muitas narrativas')}
@@ -956,7 +1002,7 @@ ${subnav('maculele',[['historia-m','História e origem'],['caracteristicas','Car
 ${nextRoom('maculele')}`;
 
 P.historia=()=>`
-${hero({eyebrow:'Sala 04 · História e ancestralidade',title:'AS RAÍZES DE UMA CULTURA QUE TRANSFORMOU O BRASIL',sub:'O contexto histórico que liga capoeira, ijexá e Maculelê à presença africana no Brasil.',art:A.scene({seed:9,ring:24,bg1:'#2e2218'})})}
+${hero({eyebrow:'Sala 04 · História e ancestralidade',title:'AS RAÍZES DE UMA CULTURA QUE TRANSFORMOU O BRASIL',sub:'O contexto histórico que liga capoeira, ijexá e Maculelê à presença africana no Brasil.',art:photo('saofrancisco',{eager:true})})}
 ${subnav('historia',[['presenca','Presença africana'],['resistencia','Resistência cultural'],['transmissao','Transmissão'],['hoje','Na atualidade'],['preconceito','Combate ao preconceito']])}
 <section class="sec" id="presenca"><div class="wrap split top-align">
   <div>${head('7.1 · Presença africana no Brasil','Muitos povos, não um só')}
@@ -999,7 +1045,7 @@ ${hero({eyebrow:'Sala 05 · Museu dos instrumentos',title:'O SOM QUE ORGANIZA A 
 ${nextRoom('instrumentos')}`;
 
 P['linha-do-tempo']=()=>`
-${hero({eyebrow:'Sala 06 · Linha do tempo',title:'SÉCULOS DE MEMÓRIA',sub:'Acontecimentos documentados, interpretações históricas e tradições orais, cada um identificado pelo seu tipo e pela fonte.',art:A.scene({seed:17,ring:16,bg1:'#2e2218'})})}
+${hero({eyebrow:'Sala 06 · Linha do tempo',title:'SÉCULOS DE MEMÓRIA',sub:'Acontecimentos documentados, interpretações históricas e tradições orais, cada um identificado pelo seu tipo e pela fonte.',art:photo('pelourinho',{eager:true})})}
 <section class="sec"><div class="wrap">
   <div class="filters" role="group" aria-label="Filtrar linha do tempo">${[['todos','Todos'],['historia','História afro-brasileira'],['capoeira','Capoeira'],['ijexa','Ijexá e afoxés'],['maculele','Maculelê']].map(([k,l],i)=>`<button aria-pressed="${i===0}" data-tfilter="${k}">${l}</button>`).join('')}</div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:40px">${Object.keys(TAGS).map(badge).join('')}</div>
@@ -1011,16 +1057,16 @@ ${hero({eyebrow:'Sala 06 · Linha do tempo',title:'SÉCULOS DE MEMÓRIA',sub:'Ac
 ${nextRoom('linha-do-tempo')}`;
 
 P.galeria=()=>`
-${hero({eyebrow:'Sala 07 · Galeria cultural',title:'GALERIA DE PRANCHAS',sub:'Composições ilustradas criadas para este museu. Clique para ampliar e navegue com as setas.',art:A.scene({seed:19,ring:18,bg1:'#1f2b23'})})}
+${hero({eyebrow:'Sala 07 · Galeria cultural',title:'GALERIA CULTURAL',sub:'Fotografias da Bahia e pranchas ilustradas criadas para este museu. Clique para ampliar e navegue com as setas.',art:photo('baiana3',{eager:true})})}
 <section class="sec dark"><div class="wrap">
   <div class="filters" role="group" aria-label="Filtrar galeria por categoria">${GAL_CATS.map((c,i)=>`<button aria-pressed="${i===0}" data-gfilter="${c}">${c}</button>`).join('')}</div>
-  <div class="gal" id="gal">${GALLERY.map((g,i)=>`<figure class="rv" data-cat="${g.cat}"><button data-gal="${i}" aria-label="Ampliar: ${esc(g.t)}">${g.art()}</button><figcaption><span>${g.cat}</span><b>${g.t}</b><small class="muted">${g.c}</small></figcaption></figure>`).join('')}</div>
-  <p class="note mt" style="color:var(--dk-muted)"><span>⟡</span><span><b>Sobre as imagens.</b> Esta galeria usa ilustrações vetoriais originais, e não fotografias, para não atribuir a pessoas, grupos ou mestres imagens que não sejam deles. Para retratos e registros reais, consulte os acervos indicados na sala de <a href="#referencias" style="color:var(--ouro)">Referências</a>.</span></p>
+  <div class="gal" id="gal">${GALLERY.map((g,i)=>`<figure class="rv" data-cat="${g.cat}"><button data-gal="${i}" aria-label="Ampliar: ${esc(g.t)}">${g.ph?photo(g.ph,{sizes:'(max-width:700px) 100vw, 33vw'}):g.art()}</button><figcaption><span>${g.cat}</span><b>${g.t}</b><small class="muted">${g.c}</small></figcaption></figure>`).join('')}</div>
+  <p class="note mt" style="color:var(--dk-muted)"><span>⟡</span><span><b>Sobre as imagens.</b> As fotografias vêm do banco de imagens livre Pexels e mostram cenas de Salvador e da cultura afro-baiana; elas ilustram o contexto e não identificam grupos ou mestres específicos. Os retratos de mestres continuam como pranchas tipográficas, para não atribuir a pessoas imagens que não sejam delas. Para retratos e registros reais, consulte os acervos indicados na sala de <a href="#referencias" style="color:var(--ouro)">Referências</a>.</span></p>
 </div></section>
 ${nextRoom('galeria')}`;
 
 P.curiosidades=()=>`
-${hero({eyebrow:'Sala 08 · Descobrir',title:'VOCÊ SABIA?',sub:'Curiosidades, um quiz com 17 perguntas, o glossário cultural e uma área para explorar as tradições.',art:A.scene({seed:23,ring:14,bg1:'#3a2a1d'})})}
+${hero({eyebrow:'Sala 08 · Descobrir',title:'VOCÊ SABIA?',sub:'Curiosidades, um quiz com 17 perguntas, o glossário cultural e uma área para explorar as tradições.',art:photo('maos',{eager:true})})}
 ${subnav('curiosidades',[['sabia','Você sabia?'],['quiz','Quiz cultural'],['glossario','Glossário'],['explore','Explore as tradições']])}
 <section class="sec" id="sabia"><div class="wrap">
   ${head('11.1 · Você sabia?','Perguntas que abrem caminhos','Clique em uma pergunta para ler a explicação completa.')}
@@ -1050,7 +1096,7 @@ const EXPLORE={
 };
 
 P.comparacao=()=>`
-${hero({eyebrow:'Sala 09 · Comparação',title:'TRÊS EXPRESSÕES, MUITAS RELAÇÕES',sub:'O que aproxima e o que distingue Capoeira, Ijexá e Maculelê.',art:A.scene({seed:27,ring:18,bg1:'#1f2b23'})})}
+${hero({eyebrow:'Sala 09 · Comparação',title:'TRÊS EXPRESSÕES, MUITAS RELAÇÕES',sub:'O que aproxima e o que distingue Capoeira, Ijexá e Maculelê.',art:photo('rua',{eager:true})})}
 <section class="sec"><div class="wrap">
   ${head('12 · Tabela comparativa','Lado a lado')}
   <div class="tbl-wrap rv"><table><thead><tr><th scope="col">Aspecto</th><th scope="col">Capoeira</th><th scope="col">Ijexá</th><th scope="col">Maculelê</th></tr></thead><tbody>
@@ -1072,7 +1118,7 @@ ${hero({eyebrow:'Sala 09 · Comparação',title:'TRÊS EXPRESSÕES, MUITAS RELA�
 ${nextRoom('comparacao')}`;
 
 P.preservacao=()=>`
-${hero({eyebrow:'Sala 10 · Preservação cultural',title:'QUANDO UMA TRADIÇÃO CONTINUA VIVA, A HISTÓRIA NÃO SE PERDE.',sub:'Preservar não é guardar numa vitrine. É garantir que mestres ensinem, que jovens aprendam e que comunidades sejam respeitadas.',art:A.scene({seed:29,ring:26,bg1:'#2e2218'})})}
+${hero({eyebrow:'Sala 10 · Preservação cultural',title:'QUANDO UMA TRADIÇÃO CONTINUA VIVA, A HISTÓRIA NÃO SE PERDE.',sub:'Preservar não é guardar numa vitrine. É garantir que mestres ensinem, que jovens aprendam e que comunidades sejam respeitadas.',art:photo('baianas',{eager:true})})}
 <section class="sec"><div class="wrap">
   <div class="grid g2" style="gap:0">
    <div class="rv" style="aspect-ratio:1/1;max-width:100%;overflow:hidden;background:var(--preto)"><svg viewBox="0 0 600 600" role="img" aria-label="Ilustração de três gerações em roda: figuras grandes, médias e pequenas ao redor de um berimbau."><rect width="600" height="600" fill="${C.verde}"/>${[0,1,2].map(r=>{const rad=90+r*80,n=6+r*4,sz=[1.3,1,.7][r];let s='';for(let i=0;i<n;i++){const a=i/n*Math.PI*2;const x=300+Math.cos(a)*rad,y=300+Math.sin(a)*rad;s+=`<g transform="translate(${x.toFixed(0)} ${y.toFixed(0)}) scale(${sz})"><circle cy="-22" r="9" fill="${C.areia}"/><path d="M-12 14 Q-12 -10 0 -12 Q12 -10 12 14Z" fill="${r===0?C.ouro:r===1?C.areia:C.bege}" opacity=".9"/></g>`}return s}).join('')}<g transform="translate(250 230) scale(.5)">${A.berimbau().replace(/^<svg[^>]*>|<\/svg>$/g,'')}</g><text x="300" y="575" text-anchor="middle" fill="${C.bege}" font-family="Manrope, sans-serif" font-size="14" letter-spacing="3">MESTRES · ADULTOS · CRIANÇAS</text></svg></div>
@@ -1091,7 +1137,7 @@ ${hero({eyebrow:'Sala 11 · Sobre o projeto',title:'SOBRE O RAÍZES',sub:'Um mus
    <h3>Critérios de conteúdo</h3>
    <ul class="list-dash"><li>Diferenciar fatos documentados, interpretações históricas e tradições orais.</li><li>Não apresentar lendas como fatos.</li><li>Não tratar "a África" como uma cultura única.</li><li>Distinguir ijexá (ritmo) de afoxé (manifestação), e capoeira de Maculelê.</li><li>Não inventar datas, citações ou referências.</li></ul>
    <h3>Sobre as imagens</h3>
-   <p>Todas as imagens deste site são ilustrações vetoriais originais, desenhadas em código para o projeto. Optamos por não usar fotografias geradas ou de origem incerta, que poderiam representar de forma errada instrumentos, pessoas e manifestações. Os retratos de mestres foram substituídos por pranchas tipográficas. Para fotografias reais, recomendamos os acervos do IPHAN, da Fundação Cultural Palmares e de museus e grupos culturais, sempre respeitando os direitos de uso e de imagem.</p>
+   <p>O site combina fotografias reais do banco de imagens Pexels (licença de uso livre, com crédito aos fotógrafos) e ilustrações vetoriais originais, desenhadas em código para o projeto. As fotos mostram Salvador e a cultura afro-baiana em contexto e não identificam grupos ou mestres específicos. Os retratos de mestres foram substituídos por pranchas tipográficas. Para fotografias reais, recomendamos os acervos do IPHAN, da Fundação Cultural Palmares e de museus e grupos culturais, sempre respeitando os direitos de uso e de imagem.</p>
    <h3>Acessibilidade</h3>
    <p>O site pode ser navegado por teclado, respeita a configuração de redução de movimento do dispositivo e funciona em tema claro ou escuro.</p>
    <p class="muted">Desenvolvido em 2026.</p>
@@ -1100,6 +1146,7 @@ ${hero({eyebrow:'Sala 11 · Sobre o projeto',title:'SOBRE O RAÍZES',sub:'Um mus
 ${nextRoom('sobre')}`;
 
 const REFS={
+ 'Créditos das fotografias (Pexels)':Object.values(PHOTOS).map(p=>[`${p.alt}. Foto: ${p.by==='Pexels'?'autor no Pexels':p.by}. Pexels, licença de uso livre.`,`https://www.pexels.com/photo/${p.id}/`]),
  'Instituições':[
   ['IPHAN — Instituto do Patrimônio Histórico e Artístico Nacional. Roda de Capoeira e Ofício dos Mestres de Capoeira (bens registrados).','https://portal.iphan.gov.br/'],
   ['UNESCO. Capoeira circle. Representative List of the Intangible Cultural Heritage of Humanity, 2014.','https://ich.unesco.org/en/RL/capoeira-circle-00892'],
@@ -1212,7 +1259,7 @@ function openInstr(id){const i=INSTR[id];
 /* ============ LIGHTBOX ============ */
 const lb=$('#lbDlg');let lbIdx=0,lbList=[];
 function openLb(i){lbList=$$('#gal figure').filter(f=>!f.hidden).map(f=>+f.querySelector('[data-gal]').dataset.gal);lbIdx=Math.max(0,lbList.indexOf(i));drawLb();if(!lb.open)lb.showModal()}
-function drawLb(){const g=GALLERY[lbList[lbIdx]];lb.innerHTML=`<button class="icon-btn dlg-close" data-close-dlg aria-label="Fechar galeria">✕</button><div class="lb-inner"><div class="lb-stage">${g.art()}<button class="lb-nav lb-prev" data-lb="-1" aria-label="Imagem anterior">‹</button><button class="lb-nav lb-next" data-lb="1" aria-label="Próxima imagem">›</button></div><div class="lb-cap"><span class="k">${g.cat} · ${lbIdx+1} de ${lbList.length}</span><h3>${g.t}</h3><p>${g.c}</p><small>Crédito: ilustração original, Raízes — Museu Digital (2026).</small></div></div>`}
+function drawLb(){const g=GALLERY[lbList[lbIdx]];lb.innerHTML=`<button class="icon-btn dlg-close" data-close-dlg aria-label="Fechar galeria">✕</button><div class="lb-inner"><div class="lb-stage">${g.ph?photo(g.ph,{eager:true}):g.art()}<button class="lb-nav lb-prev" data-lb="-1" aria-label="Imagem anterior">‹</button><button class="lb-nav lb-next" data-lb="1" aria-label="Próxima imagem">›</button></div><div class="lb-cap"><span class="k">${g.cat} · ${lbIdx+1} de ${lbList.length}</span><h3>${g.t}</h3><p>${g.c}</p><small>${g.ph?`Crédito: foto de ${PHOTOS[g.ph].by==='Pexels'?'autor no Pexels':PHOTOS[g.ph].by}, via <a href="https://www.pexels.com/photo/${PHOTOS[g.ph].id}/" target="_blank" rel="noopener" style="color:var(--ouro)">Pexels</a> (licença Pexels, uso livre).`:'Crédito: ilustração original, Raízes — Museu Digital (2026).'}</small></div></div>`}
 lb.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){lbIdx=(lbIdx+1)%lbList.length;drawLb()}if(e.key==='ArrowLeft'){lbIdx=(lbIdx-1+lbList.length)%lbList.length;drawLb()}});
 [idlg,lb].forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));
 

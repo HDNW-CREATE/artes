@@ -78,9 +78,12 @@ p{margin:0}
 .drawer.open aside{transform:none}
 .drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
 .drawer ol{list-style:none;margin:0;padding:0;counter-reset:s}
-.drawer li a{display:flex;gap:14px;align-items:baseline;padding:11px 0;border-bottom:1px solid #2e2922;text-decoration:none;font-family:var(--f-display);font-size:1.25rem}
-.drawer li a span{font:600 .72rem var(--f-text);color:var(--ouro);letter-spacing:.1em;width:22px}
+.drawer li a{display:flex;gap:14px;align-items:center;padding:11px 0;border-bottom:1px solid #2e2922;text-decoration:none;font-family:var(--f-display);font-size:1.25rem}
+.drawer li a span{flex:none;font:600 .72rem var(--f-text);color:var(--ouro);letter-spacing:.1em;width:22px}
 .drawer li a:hover,.drawer li a[aria-current="page"]{color:var(--ouro)}
+.drawer li a .th{flex:none;width:52px;height:52px;object-fit:cover;border:1px solid #3a332a;background:#201d19;transition:border-color .25s,transform .25s}
+.drawer li a:hover .th,.drawer li a[aria-current="page"] .th{border-color:var(--ouro);transform:scale(1.05)}
+.drawer li a b{font-weight:inherit;line-height:1.2}
 .icon-btn{background:none;border:1px solid #5a4b37;color:inherit;width:40px;height:40px;display:grid;place-items:center;cursor:pointer}
 
 /* buttons */
@@ -1185,7 +1188,8 @@ ${nextRoom('referencias')}`;
 /* ============ FOOTER / NAV ============ */
 function renderChrome(){
   $('#nav').innerHTML=NAV_MAIN.map(r=>`<a href="#${r}" data-route="${r}">${NAV_SHORT[r]||ROUTES.find(x=>x[0]===r)[1]}</a>`).join('');
-  $('#drawerList').innerHTML=ROUTES.map(([r,l],i)=>`<li><a href="#${r}" data-route="${r}"><span>${String(i+1).padStart(2,'0')}</span>${l}</a></li>`).join('');
+  const TH={inicio:'roda',capoeira:'aú',ijexa:'tambores',maculele:'roda2',historia:'saofrancisco',instrumentos:'maos','linha-do-tempo':'pelourinho',galeria:'baiana3',curiosidades:'baianas2',comparacao:'rua',preservacao:'baianas',sobre:'tambores',referencias:'pelourinho'};
+  $('#drawerList').innerHTML=ROUTES.map(([r,l],i)=>{const p=PHOTOS[TH[r]];return `<li><a href="#${r}" data-route="${r}"><span>${String(i+1).padStart(2,'0')}</span><img class="th" src="${pxUrl(p.id,160)}" srcset="${pxUrl(p.id,160)} 1x, ${pxUrl(p.id,320)} 2x" alt="" loading="lazy" decoding="async" style="object-position:${p.pos}"><b>${l}</b></a></li>`}).join('');
   $('#footer').innerHTML=`<div class="wrap"><div class="foot-grid">
    <div><a class="brand" href="#inicio"><span><b>RAÍZES</b><small>Museu Digital da Cultura Afro-Brasileira</small></span></a><p style="margin-top:18px;max-width:40ch">Um espaço dedicado à valorização, ao conhecimento e à preservação das manifestações culturais afro-brasileiras.</p></div>
    <div><h4>Salas</h4><ul>${[['inicio','Início'],['capoeira','Capoeira'],['ijexa','Ijexá'],['maculele','Maculelê'],['historia','História'],['galeria','Galeria'],['referencias','Referências']].map(([r,l])=>`<li><a href="#${r}">${l}</a></li>`).join('')}</ul></div>

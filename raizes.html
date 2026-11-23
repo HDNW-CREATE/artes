@@ -404,6 +404,14 @@ dialog::backdrop{background:rgba(10,9,8,.78)}
 .gal button:hover .ph{transform:scale(1.04)}
 .lb-stage .ph{width:auto;max-width:100%;height:auto;max-height:68vh;object-fit:contain}
 .photo-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.instr .pic.has-ph{position:relative;overflow:hidden;background:#14120f}
+.instr .pic.has-ph .ph{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.instr:hover .pic.has-ph .ph{transform:scale(1.05)}
+.instr .pic.has-ph .ph-cr{font-size:.62rem;padding:3px 8px}
+.dlg .pic.has-ph{padding:0;position:relative;display:block;min-height:320px}
+.dlg .pic.has-ph .ph{position:absolute;inset:0}
+.dlg .pic-note{position:absolute;left:0;right:0;bottom:0;padding:28px 16px 30px;font-size:.78rem;line-height:1.45;color:#eadfcb;background:linear-gradient(180deg,transparent,rgba(23,21,18,.9))}
+@media (max-width:820px){.dlg .pic.has-ph{min-height:0;aspect-ratio:4/3}}
 .ph-fig{margin:0;display:grid;gap:10px;align-content:start}
 .ph-fig figcaption{font-size:.86rem;line-height:1.5;color:var(--muted)}
 .dark .ph-fig figcaption,.green .ph-fig figcaption{color:var(--dk-muted)}
@@ -562,12 +570,21 @@ const PHOTOS={
  ilorin:{id:38081679,alt:'Mãos tocando um tambor tradicional africano em Ilorin, na Nigéria',by:'Pexels',pos:'50% 50%'},
  cana:{id:9622885,alt:'Trabalhador cortando cana-de-açúcar com facão em Alagoas',by:'alexandre saraiva carniato',pos:'50% 35%'},
  vinil:{id:12858792,alt:'Discos de vinil sob luz quente, no bairro do Rio Vermelho, em Salvador',by:'Andre Moura',pos:'50% 50%'},
+ i_berimbau:{id:10918548,alt:'Músico tocando berimbau, com a cabaça apoiada no corpo e a baqueta na mão',by:'Pexels',pos:'50% 30%'},
+ i_pandeiro:{id:37414885,alt:'Pandeiro de pele com platinelas metálicas',by:'Pexels',pos:'50% 50%'},
+ i_atabaque:{id:30146816,alt:'Atabaques de madeira com cordas expostos em uma loja de Salvador',by:'Pexels',pos:'40% 45%'},
+ i_xequere:{id:32632178,alt:'Homem segurando um xequerê, cabaça envolta em rede de contas',by:'Pexels',pos:'60% 60%'},
+ i_afoxe:{id:7285251,alt:'Mãos segurando uma cabasa, instrumento de contas metálicas derivado do afoxé',by:'Kaboompics',pos:'50% 40%'},
+ i_reco:{id:7285264,alt:'Homem raspando um güiro de madeira com uma vareta',by:'Kaboompics',pos:'50% 50%'},
  cortejo:{id:15674581,alt:'Cortejo de rua com dançarinos vestidos de branco',by:'Pexels',pos:'50% 50%'}
 };
 const pxUrl=(id,w)=>`https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
 function photo(k,{eager=false,sizes='100vw'}={}){const p=PHOTOS[k];
   return `<img class="ph" src="${pxUrl(p.id,1280)}" srcset="${[640,960,1280,1920].map(w=>pxUrl(p.id,w)+' '+w+'w').join(', ')}" sizes="${sizes}" alt="${p.alt}" loading="${eager?'eager':'lazy'}" decoding="async"${eager?' fetchpriority="high"':''} style="object-position:${p.pos}">`}
 function credit(k){const p=PHOTOS[k];return `<span class="ph-cr">Foto: ${p.by==='Pexels'?'':p.by+' / '}<a href="https://www.pexels.com/photo/${p.id}/" target="_blank" rel="noopener">Pexels</a></span>`}
+const INSTR_PH={berimbau:['i_berimbau',''],pandeiro:['i_pandeiro',''],atabaque:['i_atabaque','Atabaques à venda em Salvador.'],xequere:['i_xequere',''],afoxe:['i_afoxe','Na foto, a cabasa: versão moderna do afoxé, com contas de metal no lugar das sementes.'],reco:['i_reco','Na foto, um güiro: raspador da mesma família do reco-reco.']};
+function instrPic(id,big){const p=INSTR_PH[id];if(!p)return `<div class="pic">${INSTR_ART[id]()}</div>`;
+  return `<div class="pic has-ph">${photo(p[0],{sizes:big?'(max-width:820px) 100vw, 45vw':'(max-width:700px) 50vw, 25vw',eager:big})}${big&&p[1]?`<p class="pic-note">${p[1]}</p>`:''}${credit(p[0])}</div>`}
 function fig(k,cap,ratio='4/3',cls='',sizes='(max-width:900px) 100vw, 50vw'){return `<figure class="ph-fig rv ${cls}"><div class="ph-box" style="aspect-ratio:${ratio}">${photo(k,{sizes})}${credit(k)}</div><figcaption>${cap}</figcaption></figure>`}
 function photoBox(k,ratio,sizes='(max-width:900px) 100vw, 50vw'){return `<div class="rv ph-box" style="aspect-ratio:${ratio};max-width:100%">${photo(k,{sizes})}${credit(k)}</div>`}
 
@@ -715,7 +732,7 @@ function hero({eyebrow,title,sub,art,actions='',short=true,meta=''}){
 }
 function subnav(route,items){return `<nav class="subnav" aria-label="Seções desta página"><div class="wrap">${items.map(([id,l])=>`<a href="#${route}" data-anchor="${id}">${l}</a>`).join('')}</div></nav>`}
 function head(eyebrow,title,lead=''){return `<div class="sec-head"><p class="eyebrow rv">${eyebrow}</p><h2 class="rv">${title}</h2>${lead?`<p class="lead rv">${lead}</p>`:''}<hr class="rule rv"></div>`}
-function instrCard(id,dark){const i=INSTR[id];return `<button class="card instr rv" data-instr="${id}" aria-haspopup="dialog"><div class="pic">${INSTR_ART[id]()}</div><span class="k">${i.em.join(' · ')}</span><h3>${i.nome}</h3><p>${i.fun.split('. ')[0]}.</p><span class="link-arrow">Saiba mais ${arrow}</span></button>`}
+function instrCard(id,dark){const i=INSTR[id];return `<button class="card instr rv" data-instr="${id}" aria-haspopup="dialog">${instrPic(id)}<span class="k">${i.em.join(' · ')}</span><h3>${i.nome}</h3><p>${i.fun.split('. ')[0]}.</p><span class="link-arrow">Saiba mais ${arrow}</span></button>`}
 function badge(t){const [c,l]=TAGS[t];return `<span class="badge ${c}">${l}</span>`}
 function sourceNote(txt){return `<p class="muted" style="font-size:.82rem;margin-top:14px">Fontes: ${txt}</p>`}
 function nextRoom(route){const i=ROUTES.findIndex(r=>r[0]===route);const n=ROUTES[(i+1)%ROUTES.length];return `<section class="sec dark"><div class="wrap" style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap"><div><p class="eyebrow">Próxima sala</p><h2 style="margin-top:12px">${n[1]}</h2></div><a class="btn btn-gold" href="#${n[0]}">Continuar o percurso ${arrow}</a></div></section>`}
@@ -1283,7 +1300,7 @@ menuBtn.addEventListener('click',()=>openDrawer(true));
 /* ============ INSTRUMENT MODAL ============ */
 const idlg=$('#instrDlg');
 function openInstr(id){const i=INSTR[id];
- idlg.innerHTML=`<button class="icon-btn dlg-close" data-close-dlg aria-label="Fechar ficha">✕</button><div class="dlg"><div class="pic">${INSTR_ART[id]()}</div><div class="txt"><p class="eyebrow">Ficha do instrumento</p><h2 id="instrTitle">${i.nome}</h2><div class="meta" style="display:flex;gap:6px;flex-wrap:wrap">${i.em.map(e=>`<span class="chip on">${e}</span>`).join('')}</div><dl>
+ idlg.innerHTML=`<button class="icon-btn dlg-close" data-close-dlg aria-label="Fechar ficha">✕</button><div class="dlg">${instrPic(id,true)}<div class="txt"><p class="eyebrow">Ficha do instrumento</p><h2 id="instrTitle">${i.nome}</h2><div class="meta" style="display:flex;gap:6px;flex-wrap:wrap">${i.em.map(e=>`<span class="chip on">${e}</span>`).join('')}</div><dl>
  <div><dt>Descrição física</dt><dd>${i.fis}</dd></div><div><dt>Materiais</dt><dd>${i.mat}</dd></div><div><dt>Como produz o som</dt><dd>${i.som}</dd></div><div><dt>Função musical</dt><dd>${i.fun}</dd></div><div><dt>Onde aparece</dt><dd>${i.em.join(', ')}</dd></div><div><dt>Importância cultural</dt><dd>${i.imp}</dd></div><div><dt>Curiosidade histórica</dt><dd>${i.cur}</dd></div></dl></div></div>`;
  idlg.showModal();}
 
